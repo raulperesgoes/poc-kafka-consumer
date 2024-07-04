@@ -1,0 +1,8 @@
+spring:
+  kafka:
+    consumer:
+      properties:
+        spring.json.trusted.packages: "com.br.zup.poc.kafka.consumer.domain.entity"
+aws:
+  accessKeyId: "test"
+  secretAccessKey: "test"
