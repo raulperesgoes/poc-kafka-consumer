@@ -1,10 +1,14 @@
 package com.br.poc.kafka.consumer.domain.service.aws.queue.sqs.message;
 
+import com.br.poc.kafka.consumer.domain.model.entity.MessagesEntity;
 import com.br.poc.kafka.consumer.dto.MessageDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.SqsClient;
 
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
+
+import java.lang.reflect.Field;
 
 @Service
 public class SqsMessageService {
@@ -19,27 +23,22 @@ public class SqsMessageService {
 
         SendMessageRequest sendMessageRequest = SendMessageRequest.builder()
                 .queueUrl("")
-                .messageBody("enviando mensagem")
+                .messageBody(convertRecordToStringJson(message))
                 .build();
 
         sqsClient.sendMessage(sendMessageRequest);
     }
 
-    /*private Map<String, MessageAttributeValue> convertRecordToMap(MessageDto message) {
-        Map<String, MessageAttributeValue> messageAttributes = new HashMap<>();
+    private String convertRecordToStringJson(MessageDto message) {
+        String messageBody = "";
+        MessagesEntity messagesEntity = new MessagesEntity(message);
 
-        for (var component : message.getClass().getRecordComponents()) {
-            try {
-                var value = component.getAccessor().invoke(message);
-                System.out.println(component.getName() + ": " + value);
-
-                messageAttributes.put("key", MessageAttributeValue()
-                        .withDataType("String")
-                        .withStringValue(value));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+                messageBody = objectMapper.writeValueAsString(messagesEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return messageAttributes;
-    }*/
+        return messageBody;
+    }
 }

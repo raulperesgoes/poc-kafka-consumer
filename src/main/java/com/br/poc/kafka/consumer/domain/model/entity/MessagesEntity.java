@@ -29,6 +29,11 @@ public class MessagesEntity {
         this.updatedAt = updatedAt;
     }
 
+    public MessagesEntity(MessageDto messageDto) {
+        this.sender = messageDto.sender();
+        this.message = messageDto.message();
+    }
+
     public static MessagesEntity fromMessage(MessageDto messageDto) {
         var entity = new MessagesEntity();
 
